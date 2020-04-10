@@ -25,10 +25,10 @@ Created on Tue Apr 7 21:17:47 2020
         current fitness level, and rough estimate of daily caloric intake
         
         2. Script exports a detailed 90-day training plan in an acionable,
-        digestable, and flexible format
+        digestable, specific, and flexible format
 """
 
-# Areas for research:
+# Areas for research and improvement:
 """
     1. As of now, this script loosely follows Starting Strength methodology
     (by Mark Rippatoe) for strength increase. For example, 5 sets of 5 reps (5x5)
@@ -41,7 +41,16 @@ Created on Tue Apr 7 21:17:47 2020
     expect to gain on press, squat, bench press, deadlift, and other major lifts?
     Research or training plan testers needed.
     
-    3. This idea, and subsequent workout plan, was designed with myself in mind.
+    3. This script will start by creating only the first exercise in the workout.
+    For example, if the day's workout is based around the squat then
+    the script (as currently constructed) will output all the sets, reps, and weights
+    to squat during that workout. But obviously, the athlete
+    will want to continue the workout. What exercises are best to do next,
+    in what order, super-setted? etc.
+    
+    4. Best warm-ups and stretches for each workout? Jump rope, run, other?
+    
+    5. This idea, and subsequent workout plan, was designed with myself in mind.
     But, what else do people want in their workout plan?
 """
 
@@ -56,6 +65,8 @@ helper functions:
 main functions:
     
     1. create_press_workouts
+        - returns a list of dataframes. Each dataframe is a workout that can
+        then plugged into the final calendar.
 
 """
 
@@ -164,26 +175,28 @@ def create_press_workouts(startingWeight: int):
                  pd.Series(['press workout 1', 4, 'work set 4', startingWeight, 5], index = workout1.columns),
                  pd.Series(['press workout 1', 5, 'work set 5', startingWeight, 5], index = workout1.columns)]
 
+    # append work_sets to workout 1
     workout1 = workout1.append(work_sets, ignore_index = True)
     
     # add heavy sets to workout 1
-    heavy_sets = [pd.Series(['press', 6, 'heavy set 1', startingWeight+5, 3], index = workout1.columns),
-                 pd.Series(['press', 7, 'heavy set 2', startingWeight+5, 3], index = workout1.columns),
-                 pd.Series(['press', 8, 'heavy set 3', startingWeight+5, 3], index = workout1.columns)]
+    # the heavy sets will either be a 3x3 or ~3x2
+    heavy_sets = [pd.Series(['press workout 1', 6, 'heavy set 1', startingWeight+5, 3], index = workout1.columns),
+                 pd.Series(['press workout 1', 7, 'heavy set 2', startingWeight+5, 3], index = workout1.columns),
+                 pd.Series(['press workout 1', 8, 'heavy set 3', startingWeight+5, 3], index = workout1.columns)]
 
+    # append heavy_sets to workout 1
     workout1 = workout1.append(heavy_sets, ignore_index = True)
     
-    # print workout1
-    print("WEEK 1")
-    print(workout1)
-    
-    # -------------------
-    
-    # add workouts 2 through 10
+    # append workout 1 to press_workouts list
+    press_workouts.append(workout1)
+
+    # now, add workouts 2 through 10
     
     # copy workout1
     lastworkout = workout1.copy()
+    # set current working weight
     currentWeight = startingWeight
+    # set next working weight
     nextWeight = currentWeight + 5
     
     for w in range(2,11):
@@ -191,7 +204,7 @@ def create_press_workouts(startingWeight: int):
         workout = lastworkout.copy()
         
         # create next workout
-        # increase by 2.5 lbs/week
+        # increase by ~2.5 lbs/week
         if (w % 2)  == 0:
             workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
             workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
@@ -205,6 +218,7 @@ def create_press_workouts(startingWeight: int):
             workout['weight'][10] = lastworkout['weight'][3] + 10
             workout['reps'][9] = 3
             workout['reps'][10] = 3
+            workout['workout title'] = 'press workout ' + str(w)
             
         else:
             workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
@@ -219,51 +233,34 @@ def create_press_workouts(startingWeight: int):
             workout['weight'][10] = lastworkout['weight'][3] + 15
             workout['reps'][9] = 2
             workout['reps'][10] = 2
+            workout['workout title'] = 'press workout ' + str(w)
         
         # reset last workout
         lastworkout = workout.copy()
         
-        # print workout
-        print("WEEK ", w)
-        print(workout)
+        # append workout to press_workouts list
+        press_workouts.append(workout)
         
-        """
-        # update the value of the first two work sets
-        workout['weight'][4] = workout['weight'][6]
-        workout['weight'][5] = workout['weight'][7]
-        
-        # drop the first 2 work sets
-        workout.drop([3 , 4], inplace = True)
-        
-        # reset the index of the dataframe
-        workout.reset_index(drop = True)
-        
-        # add new work sets
-        workout = insert_row(6, workout, ['press', 1, 'work set 1', nextWeight+5, 5])
-        workout = insert_row(6, workout, ['press', 1, 'work set 1', nextWeight+5, 5])
-        
-        if workout['weight'][7] == nextWeight:
-            nexttWeight = nextWeight + 5
-        
-        # update workout 1
-        lastworkout = workout.copy()
-        
-        # return new workout as dataframe
-        print("WEEK ", w)
-        print(workout)
-        """
     # add random optional next exercises
         # NOT YET
         
     # create a counter for number of reps at each set
-    
-    #return workout1
 
-create_press_workouts(100)
+    return press_workouts
 
-# create counter for number of reps of each workout
-
-
+# fuction to finally build workout plan into calendar
 def create_workout_plan(list_of_exercises, list_of_starting_weights, caloric_intake = None):
     print("under construction...")
+    
+
+# counter function for number of reps of each workout
+def total_progress():
+    print("under construction...")
+    
+### TESTING
+    
+press = create_press_workouts(100)
+print("press workout 4, if starting a a comfortable 100 lbs 5 reps")
+print("=======")
+print(press[3])
     
