@@ -249,9 +249,52 @@ def create_press_workouts(startingWeight: int):
     return press_workouts
 
 # fuction to finally build workout plan into calendar
-def create_workout_plan(list_of_exercises, list_of_starting_weights, caloric_intake = None):
-    print("under construction...")
+def create_workout_plan(list_of_exercises = None, list_of_starting_weights = None, caloric_intake = None):
     
+    # first, create a list of all days for the calendar
+    from datetime import date, timedelta, datetime
+    list_of_dates = []
+    
+    for i in range(1,91):
+        tmrw = datetime.today() + timedelta(days = 1)
+        time_delta = timedelta(days = i)
+        list_of_dates.append((tmrw + time_delta).strftime('%Y-%m-%d'))
+    
+    # next, create a list of all workouts
+    list_of_workouts = []
+    
+    # populate all workouts with default values
+    for w in range(1,91):
+        list_of_workouts.append("rest, recover!")
+        
+    # enter exercise 1 into list_of_workouts
+    first_exercise_workouts = create_press_workouts(100)
+    for x in range(0,10):
+       list_of_workouts[(x*7)] = first_exercise_workouts[x] 
+    
+    #for x in range(1, 91, 7):
+    #    for y in range(1,5):
+    #        list_of_workouts[x] = first_exercise_workouts[y]
+            
+    
+        
+    # create dictionary of all workouts by day!
+    # using dictionary comprehension 
+    # to convert lists to dictionary 
+    #res = {test_keys[i]: test_values[i] for i in range(len(test_keys))} 
+  
+    # Printing resultant dictionary  
+    #print ("Resultant dictionary is : " +  str(res)) 
+    workouts_dict = {list_of_dates[i]: list_of_workouts[i] for i in range(len(list_of_dates))} 
+    
+    #{i : "rest, recover!" for i in list_of_dates}
+    
+    # add exercise 1 to workouts_dict
+    #for i in 
+    #    value_at_index = dic.values()[index]
+    
+    #print("under construction...")
+    return workouts_dict    
 
 # counter function for number of reps of each workout
 def total_progress():
@@ -259,8 +302,10 @@ def total_progress():
     
 ### TESTING
     
-press = create_press_workouts(100)
-print("press workout 4, if starting a a comfortable 100 lbs 5 reps")
-print("=======")
-print(press[3])
-    
+#press = create_press_workouts(100)
+#print("press workout 4, if starting a a comfortable 100 lbs 5 reps")
+#print("=======")
+#print(press[3])
+
+# test 2
+test_dict = create_workout_plan()
