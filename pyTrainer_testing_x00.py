@@ -12,7 +12,7 @@ Created on Tue Apr 7 21:17:47 2020
     Use python to quickly create a custom training plan for athletes with:
         1. Specific barbell strength goals
         2. Specific endurance goals
-        3. Access to a barbell, plates, jump rope, and pull-up bar
+        3. Access to a barbell, plates, jump rope, stop watch, and pull-up bar
         4. Desire for accountability and planned workouts
         5. Expectations to improve strength, endurance, and strenth-to-weight ratio
 """
@@ -466,13 +466,13 @@ def create_deadlift_workouts(startingWeight: int, calories = 2500):
 
     return deadlift_workouts
 
-# function to create a dataframe for each bench press workout
-def create_bench_press_workouts(startingWeight: int, calories = 2500):
+# function to create a dataframe for each sprint workout
+def create_sprint_workouts(distance):
     # empty list for press workout dataframes
-    bench_press_workouts = []
+    sprint_workouts = []
     
     # create the dataframes' default columns
-    set_columns = ['workout title', 'set number', 'label', 'weight', 'reps']
+    set_columns = ['workout title', 'set number', 'label', 'length (meters)', 'timed']
     
     # first, create workout 1
     # then, duplicate workout 1 to create the next x number of workouts
@@ -481,44 +481,49 @@ def create_bench_press_workouts(startingWeight: int, calories = 2500):
     workout1 = pd.DataFrame(columns = set_columns)
     
     # add workout 1 warm-up sets
-    # warm-up set 1 will be with an empty bar
-    # warm-up set 2 will be halfway between your working weight and an empty bar
-    # warm-up set 3 will be 90% of your working weight
-    warmup_sets = [pd.Series(['bench press workout 1', 0, 'warm-up 1', 45, 8],
+    # warm-up sets will be with a few short sprints
+    warmup_sets = [pd.Series(['sprint workout 1', 0, 'warm-up 1', 50, 'untimed'],
                              index = workout1.columns),
-                   pd.Series(['bench press workout 1', 0, 'warm-up 2',
-                              round_five((startingWeight+45)/2), 6], index = workout1.columns),
-                   pd.Series(['bench press workout 1', 0, 'warm-up 3',
-                              round_five(startingWeight*.9), 3], index = workout1.columns)]
+                   pd.Series(['sprint workout 1', 0, 'warm-up 2', 100, 'untimed'],
+                             index = workout1.columns),
+                   pd.Series(['sprint workout 1', 0, 'warm-up 3', 200, 'untimed'],
+                             index = workout1.columns)]
     
     # append warmup_sets to workout 1
     workout1 = workout1.append(warmup_sets, ignore_index = True)
     
     # add work sets to workout 1
-    # the work sets will be 5 sets of 5 reps (5x5)
-    work_sets = [pd.Series(['bench press workout 1', 1, 'work set 1', startingWeight, 5], index = workout1.columns),
-                 pd.Series(['bench press workout 1', 2, 'work set 2', startingWeight, 5], index = workout1.columns),
-                 pd.Series(['bench press workout 1', 3, 'work set 3', startingWeight, 5], index = workout1.columns),
-                 pd.Series(['bench press workout 1', 4, 'work set 4', startingWeight, 5], index = workout1.columns),
-                 pd.Series(['bench press workout 1', 5, 'work set 5', startingWeight, 5], index = workout1.columns)]
+    work_sets = [pd.Series(['sprint workout 1', 1, 'work set 1', distance, 'timed'], index = workout1.columns),
+                 pd.Series(['sprint workout 1', 1, 'rest', '120 seconds', 'rest'], index = workout1.columns),
+                 pd.Series(['sprint workout 1', 2, 'work set 2', distance, 'timed'], index = workout1.columns),
+                 pd.Series(['sprint workout 1', 2, 'rest', '120 seconds', 'rest'], index = workout1.columns),
+                 pd.Series(['sprint workout 1', 3, 'work set 3', distance, 'timed'], index = workout1.columns),
+                 pd.Series(['sprint workout 1', 3, 'rest', '120 seconds', 'rest'], index = workout1.columns),
+                 pd.Series(['sprint workout 1', 4, 'work set 4', distance, 'timed'], index = workout1.columns),
+                 pd.Series(['sprint workout 1', 4, 'rest', '120 seconds', 'rest'], index = workout1.columns),
+                 pd.Series(['sprint workout 1', 5, 'work set 5', distance, 'timed'], index = workout1.columns)]
 
     # append work_sets to workout 1
     workout1 = workout1.append(work_sets, ignore_index = True)
     
     # add heavy sets to workout 1
     # the heavy sets will either be a 3x3 or ~3x2
-    heavy_sets = [pd.Series(['bench press workout 1', 6, 'heavy set 1', startingWeight+5, 3], index = workout1.columns),
-                 pd.Series(['bench press workout 1', 7, 'heavy set 2', startingWeight+5, 3], index = workout1.columns),
-                 pd.Series(['bench press workout 1', 8, 'heavy set 3', startingWeight+5, 3], index = workout1.columns)]
+    final_sets = [pd.Series(['sprint workout 1', 6, 'final set 1', distance/2, 'untimed'], index = workout1.columns),
+                  pd.Series(['sprint workout 1', 6, 'rest', '45 seconds', 'rest'], index = workout1.columns),
+                  pd.Series(['sprint workout 1', 7, 'final set 2', distance/2, 'untimed'], index = workout1.columns),
+                  pd.Series(['sprint workout 1', 7, 'rest', '45 seconds', 'rest'], index = workout1.columns),
+                  pd.Series(['sprint workout 1', 8, 'final set 3', distance/2, 'untimed'], index = workout1.columns)]
 
     # append heavy_sets to workout 1
-    workout1 = workout1.append(heavy_sets, ignore_index = True)
+    workout1 = workout1.append(final_sets, ignore_index = True)
     
     # append workout 1 to press_workouts list
-    bench_press_workouts.append(workout1)
+    sprint_workouts.append(workout1)
 
     # now, add workouts 2 through 10
     
+    
+    """
     # copy workout1
     lastworkout = workout1.copy()
     # set current working weight
@@ -574,7 +579,7 @@ def create_bench_press_workouts(startingWeight: int, calories = 2500):
     # create a counter for number of reps at each set
 
     return bench_press_workouts
-
+    """
 
 # fuction to finally build workout plan into calendar
 def create_workout_plan(list_of_exercises = None, list_of_starting_weights = None, caloric_intake = None):
