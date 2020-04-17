@@ -1,2 +1,2 @@
 # PyTrainer
- create a training plan for strength and endurance with python
+ create a training plan for strength, speed, and endurance with python
