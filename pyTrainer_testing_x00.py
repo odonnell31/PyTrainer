@@ -56,6 +56,19 @@ Created on Tue Apr 7 21:17:47 2020
 
 # Current status
 """
+to-do:
+    0. continue to put each piece of code in it's own script, so much easier to digest and test..
+    1. finish mock sprint and endurance workout generators
+    2. adjust create workout function to include sprint and endurance workouts
+    3. create excel write dict to excel tabs
+    4. create function to create "top-sheet", a calendar for workouts with links
+    5. update formatting of excel writer (a tad)
+    6. update workout generators based on cited research!!
+        6.1 too many warmup reps..
+    7. create function to take inputs from google sheet? or somewhere else
+    8. beta complete! test on friends
+    9. break into classes? maybe.
+
 helper functions:
     
     1. round_five
@@ -75,69 +88,12 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 
-# function to round any number to closest multiple of 5
-# (we will assume the athlete has plates necessary for 5lb increments)
-def round_five(x, base=5):
-    return base * round(x/base)
+# import scipts/functions
+import helper_functions_x00 as hfs
+# import 
 
-# function to insert a row into a dataframe at a given row number
-def insert_row(row_number, df, row_value):
-    start_upper = 0
-    end_upper = row_number
-    start_lower = row_number
-    end_lower = df.shape[0]
-    upper_half = [*range(start_upper, end_upper, 1)]
-    lower_half = [*range(start_lower, end_lower, 1)]
-    lower_half = [x.__add__(1) for x in lower_half]
-    index_ = upper_half + lower_half
-    df.index = index_
-    df.loc[row_number] = row_value
-    df = df.sort_index()
-    return df
 
-# function to print the plates needed for any weight on a barbell
-def barbell_calc(weight):
-    print("Required plates for a", weight, "lb lift")
-    # Subtract the weight of the bar
-    # Divide by 2 for one side of barbell
-    if weight >= 45:
-        weight = (weight-45)/2.0
 
-        Fourty_Five = int(weight)/45
-        weight = weight - (45.0*Fourty_Five)
-
-        Twenty_Five = int(weight)/25
-        weight = weight - (25.0*Twenty_Five)
-
-        Ten = int(weight)/10
-        weight = weight - (10.0*Ten)
- 
-        Five = int(weight)/5
-        weight = weight - (5.0*Five)
-
-        Two_Point_Five = weight/2.5
-        weight = weight - (2.5*Two_Point_Five)
-
-        One_Point_Two_Five = weight/1.25
-        weight = weight - (1.25*One_Point_Two_Five)
-
-        print("On each side of barbell (in lb's):")
-        print("45's:  ", Fourty_Five)
-        print("25's:  ", Twenty_Five)
-        print("10's:  ", Ten)
-        print("5's:   ", Five)
-        print("2.5's: ", int(Two_Point_Five))
-        print("1.25's:", int(One_Point_Two_Five))
-        
-        if weight != 0.0:
-            print("-----")
-            print("there's some weight left over:", weight)
-        
-    elif weight > 0:
-        print("less than 45 lbs, hit the dumbbells..")
-    
-    else:
-        print("invalid weight..")
 
 # function to create a dataframe for each press workout
 def create_press_workouts(startingWeight: int, calories = 2500):
@@ -160,9 +116,9 @@ def create_press_workouts(startingWeight: int, calories = 2500):
     warmup_sets = [pd.Series(['press workout 1', 0, 'warm-up 1', 45, 8],
                              index = workout1.columns),
                    pd.Series(['press workout 1', 0, 'warm-up 2',
-                              round_five((startingWeight+45)/2), 6], index = workout1.columns),
+                              hfs.round_five((startingWeight+45)/2), 6], index = workout1.columns),
                    pd.Series(['press workout 1', 0, 'warm-up 3',
-                              round_five(startingWeight*.9), 3], index = workout1.columns)]
+                              hfs.round_five(startingWeight*.9), 3], index = workout1.columns)]
     
     # append warmup_sets to workout 1
     workout1 = workout1.append(warmup_sets, ignore_index = True)
@@ -206,8 +162,8 @@ def create_press_workouts(startingWeight: int, calories = 2500):
         # create next workout
         # increase by ~2.5 lbs/week
         if (w % 2)  == 0:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3]
             workout['weight'][4] = lastworkout['weight'][3]
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -221,8 +177,8 @@ def create_press_workouts(startingWeight: int, calories = 2500):
             workout['workout title'] = 'press workout ' + str(w)
             
         else:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3] + 5
             workout['weight'][4] = lastworkout['weight'][3] + 5
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -269,9 +225,9 @@ def create_squat_workouts(startingWeight: int, calories = 2500):
     warmup_sets = [pd.Series(['squat workout 1', 0, 'warm-up 1', 45, 8],
                              index = workout1.columns),
                    pd.Series(['squat workout 1', 0, 'warm-up 2',
-                              round_five((startingWeight+45)/2), 6], index = workout1.columns),
+                              hfs.round_five((startingWeight+45)/2), 6], index = workout1.columns),
                    pd.Series(['squat workout 1', 0, 'warm-up 3',
-                              round_five(startingWeight*.9), 3], index = workout1.columns)]
+                              hfs.round_five(startingWeight*.9), 3], index = workout1.columns)]
     
     # append warmup_sets to workout 1
     workout1 = workout1.append(warmup_sets, ignore_index = True)
@@ -315,8 +271,8 @@ def create_squat_workouts(startingWeight: int, calories = 2500):
         # create next workout
         # increase by ~2.5 lbs/week
         if (w % 2)  == 0:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3]
             workout['weight'][4] = lastworkout['weight'][3]
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -330,8 +286,8 @@ def create_squat_workouts(startingWeight: int, calories = 2500):
             workout['workout title'] = 'squat workout ' + str(w)
             
         else:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3] + 5
             workout['weight'][4] = lastworkout['weight'][3] + 5
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -378,9 +334,9 @@ def create_deadlift_workouts(startingWeight: int, calories = 2500):
     warmup_sets = [pd.Series(['deadlift workout 1', 0, 'warm-up 1', 45, 8],
                              index = workout1.columns),
                    pd.Series(['deadlift workout 1', 0, 'warm-up 2',
-                              round_five((startingWeight+45)/2), 6], index = workout1.columns),
+                              hfs.round_five((startingWeight+45)/2), 6], index = workout1.columns),
                    pd.Series(['deadlift workout 1', 0, 'warm-up 3',
-                              round_five(startingWeight*.9), 3], index = workout1.columns)]
+                              hfs.round_five(startingWeight*.9), 3], index = workout1.columns)]
     
     # append warmup_sets to workout 1
     workout1 = workout1.append(warmup_sets, ignore_index = True)
@@ -424,8 +380,8 @@ def create_deadlift_workouts(startingWeight: int, calories = 2500):
         # create next workout
         # increase by ~2.5 lbs/week
         if (w % 2)  == 0:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3]
             workout['weight'][4] = lastworkout['weight'][3]
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -439,8 +395,8 @@ def create_deadlift_workouts(startingWeight: int, calories = 2500):
             workout['workout title'] = 'deadlift workout ' + str(w)
             
         else:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3] + 5
             workout['weight'][4] = lastworkout['weight'][3] + 5
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -465,6 +421,115 @@ def create_deadlift_workouts(startingWeight: int, calories = 2500):
     # create a counter for number of reps at each set
 
     return deadlift_workouts
+
+# function to create a dataframe for each bench press workout
+def create_bench_press_workouts(startingWeight: int, calories = 2500):
+    # empty list for press workout dataframes
+    bench_press_workouts = []
+    
+    # create the dataframes' default columns
+    set_columns = ['workout title', 'set number', 'label', 'weight', 'reps']
+    
+    # first, create workout 1
+    # then, duplicate workout 1 to create the next x number of workouts
+    
+    # create workout 1 skeleton dataframe
+    workout1 = pd.DataFrame(columns = set_columns)
+    
+    # add workout 1 warm-up sets
+    # warm-up set 1 will be with an empty bar
+    # warm-up set 2 will be halfway between your working weight and an empty bar
+    # warm-up set 3 will be 90% of your working weight
+    warmup_sets = [pd.Series(['bench press workout 1', 0, 'warm-up 1', 45, 8],
+                             index = workout1.columns),
+                   pd.Series(['bench press workout 1', 0, 'warm-up 2',
+                              hfs.round_five((startingWeight+45)/2), 6], index = workout1.columns),
+                   pd.Series(['bench press workout 1', 0, 'warm-up 3',
+                              hfs.round_five(startingWeight*.9), 3], index = workout1.columns)]
+    
+    # append warmup_sets to workout 1
+    workout1 = workout1.append(warmup_sets, ignore_index = True)
+    
+    # add work sets to workout 1
+    # the work sets will be 5 sets of 5 reps (5x5)
+    work_sets = [pd.Series(['bench press workout 1', 1, 'work set 1', startingWeight, 5], index = workout1.columns),
+                 pd.Series(['bench press workout 1', 2, 'work set 2', startingWeight, 5], index = workout1.columns),
+                 pd.Series(['bench press workout 1', 3, 'work set 3', startingWeight, 5], index = workout1.columns),
+                 pd.Series(['bench press workout 1', 4, 'work set 4', startingWeight, 5], index = workout1.columns),
+                 pd.Series(['bench press workout 1', 5, 'work set 5', startingWeight, 5], index = workout1.columns)]
+
+    # append work_sets to workout 1
+    workout1 = workout1.append(work_sets, ignore_index = True)
+    
+    # add heavy sets to workout 1
+    # the heavy sets will either be a 3x3 or ~3x2
+    heavy_sets = [pd.Series(['bench press workout 1', 6, 'heavy set 1', startingWeight+5, 3], index = workout1.columns),
+                 pd.Series(['bench press workout 1', 7, 'heavy set 2', startingWeight+5, 3], index = workout1.columns),
+                 pd.Series(['bench press workout 1', 8, 'heavy set 3', startingWeight+5, 3], index = workout1.columns)]
+
+    # append heavy_sets to workout 1
+    workout1 = workout1.append(heavy_sets, ignore_index = True)
+    
+    # append workout 1 to press_workouts list
+    bench_press_workouts.append(workout1)
+
+    # now, add workouts 2 through 10
+    
+    # copy workout1
+    lastworkout = workout1.copy()
+    # set current working weight
+    currentWeight = startingWeight
+    # set next working weight
+    nextWeight = currentWeight + 5
+    
+    for w in range(2,11):
+        # create copy of last weeks workout
+        workout = lastworkout.copy()
+        
+        # create next workout
+        # increase by ~2.5 lbs/week
+        if (w % 2)  == 0:
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][3] = lastworkout['weight'][3]
+            workout['weight'][4] = lastworkout['weight'][3]
+            workout['weight'][5] = lastworkout['weight'][3] + 5
+            workout['weight'][6] = lastworkout['weight'][3] + 5
+            workout['weight'][7] = lastworkout['weight'][3] + 5
+            workout['weight'][8] = lastworkout['weight'][3] + 10
+            workout['weight'][9] = lastworkout['weight'][3] + 10
+            workout['weight'][10] = lastworkout['weight'][3] + 10
+            workout['reps'][9] = 3
+            workout['reps'][10] = 3
+            workout['workout title'] = 'bench press workout ' + str(w)
+            
+        else:
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][3] = lastworkout['weight'][3] + 5
+            workout['weight'][4] = lastworkout['weight'][3] + 5
+            workout['weight'][5] = lastworkout['weight'][3] + 5
+            workout['weight'][6] = lastworkout['weight'][3] + 5
+            workout['weight'][7] = lastworkout['weight'][3] + 5
+            workout['weight'][8] = lastworkout['weight'][3] + 10
+            workout['weight'][9] = lastworkout['weight'][3] + 15
+            workout['weight'][10] = lastworkout['weight'][3] + 15
+            workout['reps'][9] = 2
+            workout['reps'][10] = 2
+            workout['workout title'] = 'bench press workout ' + str(w)
+        
+        # reset last workout
+        lastworkout = workout.copy()
+        
+        # append workout to press_workouts list
+        bench_press_workouts.append(workout)
+        
+    # add random optional next exercises
+        # NOT YET
+        
+    # create a counter for number of reps at each set
+
+    return bench_press_workouts
 
 # function to create a dataframe for each sprint workout
 def create_sprint_workouts(distance):
@@ -538,8 +603,8 @@ def create_sprint_workouts(distance):
         # create next workout
         # increase by ~2.5 lbs/week
         if (w % 2)  == 0:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3]
             workout['weight'][4] = lastworkout['weight'][3]
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -553,8 +618,8 @@ def create_sprint_workouts(distance):
             workout['workout title'] = 'bench press workout ' + str(w)
             
         else:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3] + 5
             workout['weight'][4] = lastworkout['weight'][3] + 5
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -631,8 +696,8 @@ def create_endurance_workouts(milage):
         # create next workout
         # increase by ~2.5 lbs/week
         if (w % 2)  == 0:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3]
             workout['weight'][4] = lastworkout['weight'][3]
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -646,8 +711,8 @@ def create_endurance_workouts(milage):
             workout['workout title'] = 'bench press workout ' + str(w)
             
         else:
-            workout['weight'][1] = round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = round_five(lastworkout['weight'][3] * .88)
+            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
+            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
             workout['weight'][3] = lastworkout['weight'][3] + 5
             workout['weight'][4] = lastworkout['weight'][3] + 5
             workout['weight'][5] = lastworkout['weight'][3] + 5
@@ -734,4 +799,7 @@ def total_progress():
 # test 3
 test_dict = create_workout_plan([create_press_workouts, create_squat_workouts,
                                  create_deadlift_workouts, create_bench_press_workouts],
-        [105, 165, 215, 95])
+                                [105, 165, 215, 95])
+
+# test 4
+#hfs.barbell_calc(220)
