@@ -79,7 +79,9 @@ def create_endurance_workouts(milage):
     
     
 # FUNCTIONAL TESTING
+"""
 endurance_workouts_test = create_endurance_workouts(2)
 print(endurance_workouts_test[0])
 print("=============")
 print(endurance_workouts_test[3])
+"""

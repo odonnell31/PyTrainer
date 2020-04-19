@@ -68,15 +68,10 @@ def create_sprint_workouts(distance):
     sprint_workouts.append(workout1)
 
     # now, add workouts 2 through 10
-    
-    
-    """
     # copy workout1
     lastworkout = workout1.copy()
     # set current working weight
-    currentWeight = startingWeight
-    # set next working weight
-    nextWeight = currentWeight + 5
+    currentDistance = distance
     
     for w in range(2,11):
         # create copy of last weeks workout
@@ -85,40 +80,16 @@ def create_sprint_workouts(distance):
         # create next workout
         # increase by ~2.5 lbs/week
         if (w % 2)  == 0:
-            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
-            workout['weight'][3] = lastworkout['weight'][3]
-            workout['weight'][4] = lastworkout['weight'][3]
-            workout['weight'][5] = lastworkout['weight'][3] + 5
-            workout['weight'][6] = lastworkout['weight'][3] + 5
-            workout['weight'][7] = lastworkout['weight'][3] + 5
-            workout['weight'][8] = lastworkout['weight'][3] + 10
-            workout['weight'][9] = lastworkout['weight'][3] + 10
-            workout['weight'][10] = lastworkout['weight'][3] + 10
-            workout['reps'][9] = 3
-            workout['reps'][10] = 3
-            workout['workout title'] = 'bench press workout ' + str(w)
+            workout['workout title'] = 'sprint workout ' + str(w)
             
         else:
-            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
-            workout['weight'][3] = lastworkout['weight'][3] + 5
-            workout['weight'][4] = lastworkout['weight'][3] + 5
-            workout['weight'][5] = lastworkout['weight'][3] + 5
-            workout['weight'][6] = lastworkout['weight'][3] + 5
-            workout['weight'][7] = lastworkout['weight'][3] + 5
-            workout['weight'][8] = lastworkout['weight'][3] + 10
-            workout['weight'][9] = lastworkout['weight'][3] + 15
-            workout['weight'][10] = lastworkout['weight'][3] + 15
-            workout['reps'][9] = 2
-            workout['reps'][10] = 2
-            workout['workout title'] = 'bench press workout ' + str(w)
+            workout['workout title'] = 'sprint workout ' + str(w)
         
         # reset last workout
         lastworkout = workout.copy()
         
         # append workout to press_workouts list
-        bench_press_workouts.append(workout)
+        sprint_workouts.append(workout)
         
     # add random optional next exercises
         # NOT YET
@@ -126,4 +97,12 @@ def create_sprint_workouts(distance):
     # create a counter for number of reps at each set
 
     return sprint_workouts
-    """
+
+    
+# FUNCTIONAL TESTING
+"""
+sprint_workouts_test = create_sprint_workouts(200)
+print(sprint_workouts_test[0])
+print("=============")
+print(sprint_workouts_test[3])
+"""

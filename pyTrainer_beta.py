@@ -76,9 +76,7 @@ Created on Tue Apr 7 21:17:47 2020
 # Current status
 """
 to-do:
-    0. continue to put each piece of code in it's own script, so much easier to digest and test..
-    1. finish mock sprint and endurance workout generators
-    2. adjust create workout function to include sprint and endurance workouts
+
     3. create excel write dict to excel tabs
     4. create function to create "top-sheet", a calendar for workouts with links
     5. update formatting of excel writer (a tad)
@@ -96,9 +94,9 @@ helper functions:
     
 main functions:
     
-    1. create_press_workouts
-        - returns a list of dataframes. Each dataframe is a workout that can
-        then plugged into the final calendar.
+    1. create_workout_plan
+        - creates a dictionary with a key for each day
+        and a value of each workout
 
 """
 
@@ -128,7 +126,7 @@ def create_workout_plan(list_of_exercises = None, list_of_starting_weights = Non
     from datetime import date, timedelta, datetime
     list_of_dates = []
     
-    for i in range(1,91):
+    for i in range(1,72):
         tmrw = datetime.today() + timedelta(days = 1)
         time_delta = timedelta(days = i)
         list_of_dates.append((tmrw + time_delta).strftime('%Y-%m-%d'))
@@ -137,28 +135,38 @@ def create_workout_plan(list_of_exercises = None, list_of_starting_weights = Non
     list_of_workouts = []
     
     # populate all workouts with default values
-    for w in range(1,91):
+    for w in range(1,72):
         list_of_workouts.append("rest, recover!")
         
     # enter exercise 1 into list_of_workouts
-    first_exercise_workouts = list_of_exercises[0](list_of_starting_weights[0])
+    exercise_1_workouts = list_of_exercises[0](list_of_starting_weights[0])
     for x in range(0,10):
-       list_of_workouts[(x*7)] = first_exercise_workouts[x]
+       list_of_workouts[(x*7)] = exercise_1_workouts[x]
        
     # enter exercise 2 into list_of_workouts
-    first_exercise_workouts = list_of_exercises[1](list_of_starting_weights[1])
+    exercise_2_workouts = list_of_exercises[1](list_of_starting_weights[1])
     for x in range(0,10):
-       list_of_workouts[(x*7+1)] = first_exercise_workouts[x]
+       list_of_workouts[(x*7+1)] = exercise_2_workouts[x]
        
     # enter exercise 3 into list_of_workouts
-    first_exercise_workouts = list_of_exercises[2](list_of_starting_weights[2])
+    exercise_3_workouts = list_of_exercises[2](list_of_starting_weights[2])
     for x in range(0,10):
-       list_of_workouts[(x*7+2)] = first_exercise_workouts[x] 
+       list_of_workouts[(x*7+2)] = exercise_3_workouts[x] 
        
     # enter exercise 4 into list_of_workouts
-    first_exercise_workouts = list_of_exercises[3](list_of_starting_weights[3])
+    exercise_4_workouts = list_of_exercises[3](list_of_starting_weights[3])
     for x in range(0,10):
-       list_of_workouts[(x*7+3)] = first_exercise_workouts[x] 
+       list_of_workouts[(x*7+3)] = exercise_4_workouts[x]
+       
+    # enter exercise 5 into list_of_workouts
+    exercise_5_workouts = list_of_exercises[4](list_of_starting_weights[4])
+    for x in range(0,10):
+       list_of_workouts[(x*7+4)] = exercise_5_workouts[x]
+       
+    # enter exercise 6 into list_of_workouts
+    exercise_6_workouts = list_of_exercises[5](list_of_starting_weights[5])
+    for x in range(0,10):
+       list_of_workouts[(x*7+5)] = exercise_6_workouts[x]
     
     # create dictionary of all workouts by day!
     # using dictionary comprehension 
@@ -189,8 +197,10 @@ def total_progress():
 test_dict = create_workout_plan([press_workouts.create_press_workouts,
                                  squat_workouts.create_squat_workouts,
                                  deadlift_workouts.create_deadlift_workouts,
-                                 bench_press_workouts.create_bench_press_workouts],
-                                [105, 165, 215, 95])
+                                 bench_press_workouts.create_bench_press_workouts,
+                                 sprint_workouts.create_sprint_workouts,
+                                 endurance_workouts.create_endurance_workouts],
+                                [105, 165, 215, 95, 200, 2])
 
 # test 4
 #hfs.barbell_calc(220)
