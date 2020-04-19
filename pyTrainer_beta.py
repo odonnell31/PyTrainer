@@ -119,7 +119,7 @@ import endurance_workouts_v1 as endurance_workouts
 # function to intake an athlete's list of exercises/goals, starting weights,
 # and average caloric intake
 def athlete_input():
-    print("under construction..")
+    print("take users inputs with pop-up menu's..")
 
 # fuction to build workout plan into calendar
 def create_workout_plan(list_of_exercises = None, list_of_starting_weights = None, caloric_intake = None):

@@ -13,7 +13,7 @@ from collections import Counter
 # import helper functions/scripts
 import pyTrainer_helper_functions_v1 as hfs
 
-# function to create a dataframe for each sprint workout
+# function to create a dataframe for each endurance workout
 def create_endurance_workouts(milage):
     # empty list for press workout dataframes
     endurance_workouts = []
@@ -29,15 +29,16 @@ def create_endurance_workouts(milage):
     
     # add workout 1 warm-up sets
     # warm-up sets will be with a few short sprints
-    work_sets = [pd.Series(['endurance workout 1', 1, 'workout', milage, 'timed'])]
+    work_sets = pd.Series(['endurance workout 1', 1, 'workout', str(milage)+" miles", 'timed'],
+                           index = workout1.columns)
     
     # append warmup_sets to workout 1
     workout1 = workout1.append(work_sets, ignore_index = True)
     
     # add cool down to workout 1
     # the heavy sets will either be a 3x3 or ~3x2
-    cool_down_sets = [pd.Series(['endurance workout 1', 1, 'walk',
-                                 float(milage/3), 'untimed'], index = workout1.columns)]
+    cool_down_sets = pd.Series(['endurance workout 1', 1, 'walk', str("%.2f" % round(milage/4, 2)) + " miles", 'untimed'],
+                                index = workout1.columns)
 
     # append heavy_sets to workout 1
     workout1 = workout1.append(cool_down_sets, ignore_index = True)
@@ -46,15 +47,10 @@ def create_endurance_workouts(milage):
     endurance_workouts.append(workout1)
 
     # now, add workouts 2 through 10
-    
-    
-    """
     # copy workout1
     lastworkout = workout1.copy()
-    # set current working weight
-    currentWeight = startingWeight
-    # set next working weight
-    nextWeight = currentWeight + 5
+    # set current working milage
+    currentMilage = milage
     
     for w in range(2,11):
         # create copy of last weeks workout
@@ -63,45 +59,27 @@ def create_endurance_workouts(milage):
         # create next workout
         # increase by ~2.5 lbs/week
         if (w % 2)  == 0:
-            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
-            workout['weight'][3] = lastworkout['weight'][3]
-            workout['weight'][4] = lastworkout['weight'][3]
-            workout['weight'][5] = lastworkout['weight'][3] + 5
-            workout['weight'][6] = lastworkout['weight'][3] + 5
-            workout['weight'][7] = lastworkout['weight'][3] + 5
-            workout['weight'][8] = lastworkout['weight'][3] + 10
-            workout['weight'][9] = lastworkout['weight'][3] + 10
-            workout['weight'][10] = lastworkout['weight'][3] + 10
-            workout['reps'][9] = 3
-            workout['reps'][10] = 3
-            workout['workout title'] = 'bench press workout ' + str(w)
+            workout['workout title'] = 'endurance workout ' + str(w)
             
         else:
-            workout['weight'][1] = hfs.round_five(lastworkout['weight'][3] * .7)
-            workout['weight'][2] = hfs.round_five(lastworkout['weight'][3] * .88)
-            workout['weight'][3] = lastworkout['weight'][3] + 5
-            workout['weight'][4] = lastworkout['weight'][3] + 5
-            workout['weight'][5] = lastworkout['weight'][3] + 5
-            workout['weight'][6] = lastworkout['weight'][3] + 5
-            workout['weight'][7] = lastworkout['weight'][3] + 5
-            workout['weight'][8] = lastworkout['weight'][3] + 10
-            workout['weight'][9] = lastworkout['weight'][3] + 15
-            workout['weight'][10] = lastworkout['weight'][3] + 15
-            workout['reps'][9] = 2
-            workout['reps'][10] = 2
-            workout['workout title'] = 'bench press workout ' + str(w)
+            workout['workout title'] = 'endurance workout ' + str(w)
         
         # reset last workout
         lastworkout = workout.copy()
         
         # append workout to press_workouts list
-        bench_press_workouts.append(workout)
+        endurance_workouts.append(workout)
         
     # add random optional next exercises
         # NOT YET
         
     # create a counter for number of reps at each set
-
     return endurance_workouts
-    """
+
+    
+    
+# FUNCTIONAL TESTING
+endurance_workouts_test = create_endurance_workouts(2)
+print(endurance_workouts_test[0])
+print("=============")
+print(endurance_workouts_test[3])
