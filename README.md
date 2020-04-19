@@ -6,7 +6,7 @@ The beta version will create a 10-week training plan for athletes to increase st
 
 Below is an example output:
 
-![Alt text](img/coming_soon.PNG)
+![Alt text](img/coming_soon.png)
 
 ## To Use
 
@@ -16,7 +16,7 @@ To use this project first clone the entire repository, then open the python file
 
 Run the file, it should ask you for inputs:
 
-![Alt text](img/coming soon.PNG)
+![Alt text](img/coming_soon.png)
 
 ## Prerequisites
 
