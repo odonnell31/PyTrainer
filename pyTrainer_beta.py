@@ -129,14 +129,15 @@ def create_workout_plan(list_of_exercises = None, list_of_starting_weights = Non
     for i in range(1,72):
         tmrw = datetime.today() + timedelta(days = 1)
         time_delta = timedelta(days = i)
-        list_of_dates.append((tmrw + time_delta).strftime('%Y-%m-%d'))
+        list_of_dates.append("workout-"+str((tmrw + time_delta).strftime('%Y-%m-%d')))
     
     # next, create a list of all workouts
     list_of_workouts = []
     
     # populate all workouts with default values
     for w in range(1,72):
-        list_of_workouts.append("rest, recover!")
+        rest_df = pd.DataFrame(["rest, recover!"], columns = ['workout title'])
+        list_of_workouts.append(rest_df)
         
     # enter exercise 1 into list_of_workouts
     exercise_1_workouts = list_of_exercises[0](list_of_starting_weights[0])
@@ -172,8 +173,45 @@ def create_workout_plan(list_of_exercises = None, list_of_starting_weights = Non
     # using dictionary comprehension 
     # to convert lists to dictionary 
     workouts_dict = {list_of_dates[i]: list_of_workouts[i] for i in range(len(list_of_dates))} 
+    
+    # convet dictionary to a dataframe
+    workouts_df = pd.DataFrame.from_dict(workouts_dict, orient = 'index')
+    
+    writer = pd.ExcelWriter('pandas_simple_05.xlsx', engine='xlsxwriter')
+    
+    for i in list_of_workouts:
+        df = i
+        tabname = i['workout title'][0]
+        df.to_excel(writer, sheet_name=tabname)
+    writer.save()
+    
+    """
+    writer = pd.ExcelWriter('pandas_simple_01.xlsx', engine='xlsxwriter')
+    
+    for i in workouts_df:
+        #print(workouts_df[i])
+        workouts_df[i].to_excel(writer, sheet_name=str(i))
+        writer.save()
+        
 
-    return workouts_dict    
+    # Create a Pandas Excel writer using XlsxWriter as the engine.
+    writer = pd.ExcelWriter('pandas_simple.xlsx', engine='xlsxwriter')
+
+    for i in list_of_dates:
+        writer = pd.ExcelWriter('pandas_simple.xlsx', engine='xlsxwriter')
+        tabname = str(i)
+        df_name = str(i)
+        df = workouts_dict[df_name]
+        df.to_excel(writer, sheet_name=tabname)
+        writer.save()
+
+    #workouts_dict['2020-04-21'].to_excel(writer, sheet_name='Sheet1')
+    #workouts_dict['2020-04-22'].to_excel(writer, sheet_name='Sheet2')
+    # Close the Pandas Excel writer and output the Excel file.
+    #writer.save()
+    """
+    return list_of_workouts
+    
 
 # function to
 # 1. count total number of reps, sets, and weights for each exercise
