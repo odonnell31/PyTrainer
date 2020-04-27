@@ -77,7 +77,17 @@ Created on Tue Apr 7 21:17:47 2020
 """
 to-do:
 
-    3. create excel write dict to excel tabs
+    From Porter:
+    1. The trajectory of increases over 10 weeks should not be linear
+    2. You have to work people into a 5x5 and 3x3 of all these exercises
+        2.1 Gear up weeks prior to 10 week plan
+        2.2 this will also help people figure out there actual 5x5 weight
+    3. to find 5x5 weight, find a weight that number 5 is heavy on a set of 5
+    
+    1. one youtube video
+    2. list of refernces for top sheet, books, etc
+    3. google form for beta?
+    
     4. create function to create "top-sheet", a calendar for workouts with links
     5. update formatting of excel writer (a tad)
     6. update workout generators based on cited research!!
@@ -129,14 +139,15 @@ def create_workout_plan(list_of_exercises = None, list_of_starting_weights = Non
     for i in range(1,72):
         tmrw = datetime.today() + timedelta(days = 1)
         time_delta = timedelta(days = i)
-        list_of_dates.append("workout-"+str((tmrw + time_delta).strftime('%Y-%m-%d')))
+        list_of_dates.append(str((tmrw + time_delta).strftime('%Y-%m-%d')))
     
     # next, create a list of all workouts
     list_of_workouts = []
     
     # populate all workouts with default values
     for w in range(1,72):
-        rest_df = pd.DataFrame(["rest, recover!"], columns = ['workout title'])
+        data = "rest, recover! " + str(w//7)
+        rest_df = pd.DataFrame([data], columns = ['workout title'])
         list_of_workouts.append(rest_df)
         
     # enter exercise 1 into list_of_workouts
@@ -147,27 +158,27 @@ def create_workout_plan(list_of_exercises = None, list_of_starting_weights = Non
     # enter exercise 2 into list_of_workouts
     exercise_2_workouts = list_of_exercises[1](list_of_starting_weights[1])
     for x in range(0,10):
-       list_of_workouts[(x*7+1)] = exercise_2_workouts[x]
+       list_of_workouts[((x*7)+1)] = exercise_2_workouts[x]
        
     # enter exercise 3 into list_of_workouts
     exercise_3_workouts = list_of_exercises[2](list_of_starting_weights[2])
     for x in range(0,10):
-       list_of_workouts[(x*7+2)] = exercise_3_workouts[x] 
+       list_of_workouts[((x*7)+2)] = exercise_3_workouts[x] 
        
     # enter exercise 4 into list_of_workouts
     exercise_4_workouts = list_of_exercises[3](list_of_starting_weights[3])
     for x in range(0,10):
-       list_of_workouts[(x*7+3)] = exercise_4_workouts[x]
+       list_of_workouts[((x*7)+3)] = exercise_4_workouts[x]
        
     # enter exercise 5 into list_of_workouts
     exercise_5_workouts = list_of_exercises[4](list_of_starting_weights[4])
     for x in range(0,10):
-       list_of_workouts[(x*7+4)] = exercise_5_workouts[x]
+       list_of_workouts[((x*7)+4)] = exercise_5_workouts[x]
        
     # enter exercise 6 into list_of_workouts
     exercise_6_workouts = list_of_exercises[5](list_of_starting_weights[5])
     for x in range(0,10):
-       list_of_workouts[(x*7+5)] = exercise_6_workouts[x]
+       list_of_workouts[((x*7)+5)] = exercise_6_workouts[x]
     
     # create dictionary of all workouts by day!
     # using dictionary comprehension 
@@ -177,40 +188,73 @@ def create_workout_plan(list_of_exercises = None, list_of_starting_weights = Non
     # convet dictionary to a dataframe
     workouts_df = pd.DataFrame.from_dict(workouts_dict, orient = 'index')
     
-    writer = pd.ExcelWriter('pandas_simple_05.xlsx', engine='xlsxwriter')
+    # create a dataframe for the excel topsheet
+    # first, create the data
+    
+    # week, date, workout title (hyperlink), complete (empty), notes (empty)
+    workout_week = []
+    # already have list_of_dates
+    list_of_workout_titles = []
+    complete = []
+    notes = []
+    
+    x = 0
+    for t in list_of_workouts:
+        workout_title = t['workout title'][0]
+        list_of_workout_titles.append(workout_title)
+        
+        week = "Week " + str(x//7+1)
+        #week = "test week"
+        workout_week.append(week)
+        x+=1
+        
+        complete.append("not yet")
+        
+        notes.append("none")
+     
+    # then, create the dataframe
+    topsheet_df = pd.DataFrame(list(zip(workout_week, list_of_dates,
+                                        list_of_workout_titles,
+                                        complete, notes)),
+                                columns = ["week", "date", "title",
+                                           "complete", "notes"])
+    
+    # write workout plan to excel!
+    writer = pd.ExcelWriter('PyTrainer_test_x01_8.xlsx', engine='xlsxwriter')
+    
+    topsheet_df.to_excel(writer, index = False, sheet_name = "Training Plan")
+    workbook  = writer.book
+    worksheet = writer.sheets['Training Plan']
+    
+    # create some formats
+    center = workbook.add_format({'align': 'center'})
+    
+    # Set the column width
+    worksheet.set_column('B:B', 12)
+    worksheet.set_column('C:C', 22)
+    # add links to workouts
+    worksheet.write_url('F2', 'internal:\'press workout 1\'!A1', string='Link to workout')
+    worksheet.write_url('F3', 'internal:\'squat workout 1\'!A1', string='Link to workout')
+    worksheet.write_url('F4', 'internal:\'deadlift workout 1\'!A1', string='Link to workout')
+    worksheet.write_url('F5', 'internal:\'bench press workout 1\'!A1', string='Link to workout')
+    worksheet.write_url('F6', 'internal:\'sprint workout 1\'!A1', string='Link to workout')
+    worksheet.write_url('F7', 'internal:\'endurance workout 1\'!A1', string='Link to workout')
+    
     
     for i in list_of_workouts:
         df = i
         tabname = i['workout title'][0]
-        df.to_excel(writer, sheet_name=tabname)
-    writer.save()
-    
-    """
-    writer = pd.ExcelWriter('pandas_simple_01.xlsx', engine='xlsxwriter')
-    
-    for i in workouts_df:
-        #print(workouts_df[i])
-        workouts_df[i].to_excel(writer, sheet_name=str(i))
-        writer.save()
+        df.to_excel(writer, index = False, sheet_name=tabname)
+        worksheet = writer.sheets[tabname]
+        # Set the column width
+        worksheet.set_column('A:A', 15)
+        worksheet.set_column('B:B', 12, center)
+        worksheet.set_column('C:C', 20)
         
+    writer.save()
 
-    # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter('pandas_simple.xlsx', engine='xlsxwriter')
-
-    for i in list_of_dates:
-        writer = pd.ExcelWriter('pandas_simple.xlsx', engine='xlsxwriter')
-        tabname = str(i)
-        df_name = str(i)
-        df = workouts_dict[df_name]
-        df.to_excel(writer, sheet_name=tabname)
-        writer.save()
-
-    #workouts_dict['2020-04-21'].to_excel(writer, sheet_name='Sheet1')
-    #workouts_dict['2020-04-22'].to_excel(writer, sheet_name='Sheet2')
-    # Close the Pandas Excel writer and output the Excel file.
-    #writer.save()
-    """
-    return list_of_workouts
+    #return list_of_workouts
+    return topsheet_df
     
 
 # function to
@@ -238,7 +282,7 @@ test_dict = create_workout_plan([press_workouts.create_press_workouts,
                                  bench_press_workouts.create_bench_press_workouts,
                                  sprint_workouts.create_sprint_workouts,
                                  endurance_workouts.create_endurance_workouts],
-                                [105, 165, 215, 95, 200, 2])
+                                [110, 200, 215, 95, 200, 2])
 
 # test 4
 #hfs.barbell_calc(220)
